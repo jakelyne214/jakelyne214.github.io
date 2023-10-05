@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Juego de la Serpiente</title>
+        <link rel="stylesheet" href="styles.css">   
+</head>
+<body>
+    <h1>Juego de la Serpiente</h1>
+    <div id="game-board"></div>
+    <script>
+        const gameBoard = document.getElementById('game-board');
+        let snake = [{ x: 2, y: 2 }];
+        let food = { x: 10, y: 10 };
+        let direction = 'right';
+
+        function drawSnake() {
+            gameBoard.innerHTML = '';
+            snake.forEach(segment => {
+                const snakeSegment = document.createElement('div');
+                snakeSegment.className = 'snake';
+                snakeSegment.style.left = segment.x * 20 + 'px';
+                snakeSegment.style.top = segment.y * 20 + 'px';
+                gameBoard.appendChild(snakeSegment);
+            });
+        }
+
+        function drawFood() {
+            const foodElement = document.createElement('div');
+            foodElement.className = 'food';
+            foodElement.style.left = food.x * 20 + 'px';
+            foodElement.style.top = food.y * 20 + 'px';
+            gameBoard.appendChild(foodElement);
+        }
+
+        function moveSnake() {
+            let headX = snake[0].x;
+            let headY = snake[0].y;
+
+            if (direction === 'right') headX++;
+            if (direction === 'left') headX--;
+            if (direction === 'up') headY--;
+            if (direction === 'down') headY++;
+
+            const newHead = { x: headX, y: headY };
+            snake.unshift(newHead);
+
+            if (headX === food.x && headY === food.y) {
+                // Snake eats food, generate new food
+                food.x = Math.floor(Math.random() * 20);
+                food.y = Math.floor(Math.random() * 20);
+            } else {
+                // Remove the tail
+                snake.pop();
+            }
+        }
+
+        function gameLoop() {
+            moveSnake();
+            drawSnake();
+            drawFood();
+
+            // Check for collision
+            const headX = snake[0].x;
+            const headY = snake[0].y;
+            if (headX < 0 || headY < 0 || headX >= 20 || headY >= 20) {
+                alert('Game Over!');
+                location.reload(); // Reload the page to restart
+            }
+
+            setTimeout(gameLoop, 100);
+        }
+
+        // Handle keyboard input
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight' && direction !== 'left') direction = 'right';
+            if (event.key === 'ArrowLeft' && direction !== 'right') direction = 'left';
+            if (event.key === 'ArrowUp' && direction !== 'down') direction = 'up';
+            if (event.key === 'ArrowDown' && direction !== 'up') direction = 'down';
+        });
+
+        // Initialize the game
+        gameLoop();
+    </script>
+</body>
+</html>
