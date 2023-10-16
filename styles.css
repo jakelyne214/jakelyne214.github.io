@@ -66,6 +66,11 @@ article:hover img:last-child{
 }
 
 
+
+#serpiente
+{
+    background-color: azure;
+}
 #game-board {
     width: 400px;
     height: 400px;
